@@ -48,22 +48,3 @@ export class GameController {
     return this.gameService.getGameStats(userId);
   }
 }
-
-export class CreateGameSessionDto {
-  userId: string;
-}
-
-export class UpdateSessionDto {
-  score?: number;
-  timePlayed?: number;
-  enemiesDefeated?: number;
-  soulsCollected?: number;
-  relicsFound?: number;
-  currentLocation?: any;
-  isActive?: boolean;
-  difficultyLevel?: number;
-}
-
-export class EnterPortalDto {
-  portalType: PortalType;
-}

@@ -50,20 +50,3 @@ export class CharacterProgressionController {
     );
   }
 }
-
-export class CreateProgressionDto {
-  userId: string;
-}
-
-export class GainExperienceDto {
-  experience: number;
-}
-
-export class AllocateAttributePointDto {
-  attribute: string;
-}
-
-export class CompleteQuestDto {
-  souls?: number;
-  relics?: number;
-}

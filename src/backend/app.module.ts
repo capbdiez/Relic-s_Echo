@@ -7,6 +7,10 @@ import { AuthModule } from './auth/auth.module';
 import { PlayersModule } from './players/players.module';
 import { GameModule } from './game/game.module';
 import { CharacterProgressionModule } from './character-progression/character-progression.module';
+import { InventoryModule } from './inventory/inventory.module';
+import { EnemiesModule } from './enemies/enemies.module';
+import { SkillTreeModule } from './skill-tree/skill-tree.module';
+import { WorldModule } from './world/world.module';
 
 @Module({
   imports: [
@@ -25,7 +29,6 @@ import { CharacterProgressionModule } from './character-progression/character-pr
       password: process.env.DB_PASSWORD || 'password',
       database: process.env.DB_NAME || 'relics_of_echo',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      migrations: [__dirname + '/migrations/*{.ts,.js}'],
       synchronize: process.env.NODE_ENV !== 'production', // Don't auto-sync in production
       logging: process.env.NODE_ENV !== 'production',
     }),
@@ -41,6 +44,10 @@ import { CharacterProgressionModule } from './character-progression/character-pr
     PlayersModule,
     GameModule,
     CharacterProgressionModule,
+    InventoryModule,
+    EnemiesModule,
+    SkillTreeModule,
+    WorldModule,
   ],
   controllers: [],
   providers: [],

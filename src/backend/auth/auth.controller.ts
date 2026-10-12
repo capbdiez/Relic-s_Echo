@@ -26,14 +26,3 @@ export class AuthController {
     return this.authService.findAll();
   }
 }
-
-export class CreateUserDto {
-  email: string;
-  password: string;
-  role?: string;
-}
-
-export class LoginUserDto {
-  email: string;
-  password: string;
-}
