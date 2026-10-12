@@ -65,33 +65,84 @@ export class GameService {
       throw new NotFoundException(`Game session with ID ${sessionId} not found`);
     }
 
-    if (portalType === PortalType.RED) {
-      // Red portal - high risk, high reward
-      const randomEncounter = Math.random() > 0.7; // 30% chance of special encounter
-      if (randomEncounter) {
-        // Special boss encounter
-        session.enemiesDefeated += 1;
-        session.score += 1000;
-        session.soulsCollected += 50;
-      } else {
-        // Regular encounter
-        session.enemiesDefeated += 1;
-        session.score += 100;
-        session.soulsCollected += 10;
-      }
+    // Portal system optimization: Use weighted probabilities and configurable rewards
+    const portalConfig = {
+      [PortalType.RED]: {
+        baseEnemiesDefeated: 1,
+        baseScore: 100,
+        baseSouls: 10,
+        specialEncounterChance: 0.3,
+        specialEncounterMultiplier: {
+          score: 10,
+          souls: 5,
+        },
+        description: 'Red portal - high risk, high reward',
+      },
+      [PortalType.BLUE]: {
+        baseEnemiesDefeated: 1,
+        baseScore: 100,
+        baseSouls: 10,
+        specialEncounterChance: 0.1,
+        specialEncounterMultiplier: {
+          score: 4,
+          souls: 2,
+        },
+        description: 'Blue portal - moderate risk, moderate reward',
+      },
+      [PortalType.GREEN]: {
+        baseEnemiesDefeated: 1,
+        baseScore: 100,
+        baseSouls: 10,
+        specialEncounterChance: 0.05,
+        specialEncounterMultiplier: {
+          score: 20,
+          souls: 15,
+        },
+        description: 'Green portal - low risk, low reward',
+      },
+    };
+
+    const config = portalConfig[portalType];
+    
+    // Check for special encounter (boss or elite enemy)
+    const randomValue = Math.random();
+    let isSpecialEncounter = randomValue < config.specialEncounterChance;
+    
+    // Apply difficulty scaling for special encounters
+    if (isSpecialEncounter) {
+      const difficultyMultiplier = Math.min(session.difficultyLevel / 10, 2);
+      session.enemiesDefeated += config.baseEnemiesDefeated;
+      session.score += Math.floor(config.baseScore * difficultyMultiplier) + 
+        config.specialEncounterMultiplier.score * difficultyMultiplier;
+      session.soulsCollected += Math.floor(config.baseSouls * difficultyMultiplier) + 
+        config.specialEncounterMultiplier.souls * difficultyMultiplier;
     } else {
-      // Blue portal - moderate risk, moderate reward
-      session.enemiesDefeated += 1;
-      session.score += 500;
-      session.soulsCollected += 25;
+      session.enemiesDefeated += config.baseEnemiesDefeated;
+      session.score += config.baseScore;
+      session.soulsCollected += config.baseSouls;
     }
 
     session.finalPortal = portalType;
-    session.difficultyLevel = Math.min(session.difficultyLevel + 1, 10);
+    session.difficultyLevel = Math.min(session.difficultyLevel + 1, 20); // Increased max difficulty
+
+    // Log portal usage for analytics (could be moved to separate service)
+    this.logPortalUsage(session.id, portalType, isSpecialEncounter);
 
     const updatedSession = await this.gameSessionRepository.save(session);
     return updatedSession.toResponse();
-  }
+  },
+
+  private async logPortalUsage(sessionId: string, portalType: PortalType, isSpecialEncounter: boolean): Promise<void> {
+    // This method can be expanded to include analytics tracking
+    // For now, we'll just keep it as a placeholder for future enhancement
+    try {
+      // Log to analytics service or monitoring system
+      // await this.analyticsService.logPortalUsage(sessionId, portalType, isSpecialEncounter);
+    } catch (error) {
+      // Silently fail to avoid disrupting game flow
+      console.error('Failed to log portal usage:', error);
+    }
+  },
 
   async findOrCreateSession(userId: string): Promise<GameSessionResponse> {
     let session = await this.findActiveSession(userId);
