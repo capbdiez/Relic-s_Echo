@@ -17,6 +17,7 @@ export enum EnemyType {
   ZOMBIE = 'zombie',
   GOLEM = 'golem',
   DRAGON = 'dragon',
+  BOSS = 'boss',
 }
 
 @Entity('enemies')

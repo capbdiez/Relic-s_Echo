@@ -60,4 +60,10 @@ export class EnemiesController {
   ) {
     return this.enemiesService.getEnemyByTier(tier, parseInt(level), userId);
   }
+
+  @Post('user/:userId/final-boss')
+  spawnFinalBoss(@Param('userId') userId: string, @Body() body: any) {
+    const bossTier = body.bossTier || EnemyTier.CLASS_SS;
+    return this.enemiesService.spawnFinalBoss(userId, bossTier);
+  }
 }

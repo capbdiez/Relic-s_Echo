@@ -4,6 +4,10 @@ import { GameSessionResponse } from '../shared/types';
 interface GameState {
   currentSession: GameSessionResponse | null;
   isLoading: boolean;
+  error: string | null;
+  gameStats: any;
+}
+
 async function fetchGameStats(userId: string, token: string): Promise<any> {
   const response = await fetch(`http://localhost:3000/api/game/stats/user/${userId}`, {
     headers: {
@@ -192,9 +196,6 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       {children}
     </GameContext.Provider>
   );
-}
-  error: string | null;
-  gameStats: any;
 }
 
 interface StartGameParams {
